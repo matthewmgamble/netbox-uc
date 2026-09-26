@@ -1,0 +1,133 @@
+{% extends 'generic/object.html' %}
+{% load helpers %}
+{% load plugins %}
+{% load render_table from django_tables2 %}
+
+{% block content %}
+  <div class="row mb-3">
+    <div class="col col-md-6">
+      <div class="card">
+        <h5 class="card-header">SIP Trunk</h5>
+        <table class="table table-hover attr-table">
+          <tr>
+            <th scope="row">Name</th>
+            <td>{{ object.name }}</td>
+          </tr>
+          <tr>
+            <th scope="row">Status</th>
+            <td>{% badge object.get_status_display bg_color=object.get_status_color %}</td>
+          </tr>
+          <tr>
+            <th scope="row">Direction</th>
+            <td>{% badge object.get_direction_display bg_color=object.get_direction_color %}</td>
+          </tr>
+          <tr>
+            <th scope="row">Description</th>
+            <td>{{ object.description|placeholder }}</td>
+          </tr>
+        </table>
+      </div>
+      <div class="card">
+        <h5 class="card-header">Configuration</h5>
+        <table class="table table-hover attr-table">
+          <tr>
+            <th scope="row">Signaling Protocol</th>
+            <td>{{ object.signaling_protocol|placeholder }}</td>
+          </tr>
+          <tr>
+            <th scope="row">Media Protocol</th>
+            <td>{{ object.media_protocol|placeholder }}</td>
+          </tr>
+          <tr>
+            <th scope="row">External ID</th>
+            <td>{{ object.external_id|placeholder }}</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    <div class="col col-md-6">
+      <div class="card">
+        <h5 class="card-header">Assignment</h5>
+        <table class="table table-hover attr-table">
+          <tr>
+            <th scope="row">Carrier</th>
+            <td>
+              {% if object.carrier %}
+                <a href="{{ object.carrier.get_absolute_url }}">{{ object.carrier }}</a>
+              {% else %}
+                &mdash;
+              {% endif %}
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">Platform</th>
+            <td>
+              {% if object.platform %}
+                <a href="{{ object.platform.get_absolute_url }}">{{ object.platform }}</a>
+              {% else %}
+                &mdash;
+              {% endif %}
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">Site</th>
+            <td>
+              {% if object.site %}
+                <a href="{{ object.site.get_absolute_url }}">{{ object.site }}</a>
+              {% else %}
+                &mdash;
+              {% endif %}
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">Tenant</th>
+            <td>
+              {% if object.tenant %}
+                <a href="{{ object.tenant.get_absolute_url }}">{{ object.tenant }}</a>
+              {% else %}
+                &mdash;
+              {% endif %}
+            </td>
+          </tr>
+        </table>
+      </div>
+      {% include 'inc/panels/tags.html' %}
+      {% include 'inc/panels/comments.html' %}
+    </div>
+  </div>
+  <div class="row mb-3">
+    <div class="col col-md-12">
+      <div class="card">
+        <h5 class="card-header">Carrier Endpoints</h5>
+        <div class="card-body table-responsive">
+          {% if object.endpoints.exists %}
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>FQDN / IP</th>
+                  <th>Port</th>
+                  <th>Protocol</th>
+                  <th>Priority</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for ep in object.endpoints.all %}
+                  <tr>
+                    <td><a href="{{ ep.get_absolute_url }}">{{ ep.fqdn_or_ip }}</a></td>
+                    <td>{{ ep.port }}</td>
+                    <td>{{ ep.protocol|placeholder }}</td>
+                    <td>{{ ep.priority }}</td>
+                    <td>{{ ep.description|placeholder }}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          {% else %}
+            <span class="text-muted">No endpoints configured</span>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}

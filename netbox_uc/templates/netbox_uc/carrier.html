@@ -1,0 +1,65 @@
+{% extends 'generic/object.html' %}
+{% load helpers %}
+{% load plugins %}
+{% load render_table from django_tables2 %}
+
+{% block content %}
+  <div class="row mb-3">
+    <div class="col col-md-6">
+      <div class="card">
+        <h5 class="card-header">Carrier</h5>
+        <table class="table table-hover attr-table">
+          <tr>
+            <th scope="row">Name</th>
+            <td>{{ object.name }}</td>
+          </tr>
+          <tr>
+            <th scope="row">Slug</th>
+            <td>{{ object.slug }}</td>
+          </tr>
+          <tr>
+            <th scope="row">Account Number</th>
+            <td>{{ object.account_number|placeholder }}</td>
+          </tr>
+          <tr>
+            <th scope="row">Support Contact</th>
+            <td>{{ object.support_contact|placeholder }}</td>
+          </tr>
+          <tr>
+            <th scope="row">Portal URL</th>
+            <td>
+              {% if object.portal_url %}
+                <a href="{{ object.portal_url }}">{{ object.portal_url }}</a>
+              {% else %}
+                &mdash;
+              {% endif %}
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">Description</th>
+            <td>{{ object.description|placeholder }}</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    <div class="col col-md-6">
+      <div class="card">
+        <h5 class="card-header">Assignment</h5>
+        <table class="table table-hover attr-table">
+          <tr>
+            <th scope="row">Tenant</th>
+            <td>
+              {% if object.tenant %}
+                <a href="{{ object.tenant.get_absolute_url }}">{{ object.tenant }}</a>
+              {% else %}
+                &mdash;
+              {% endif %}
+            </td>
+          </tr>
+        </table>
+      </div>
+      {% include 'inc/panels/tags.html' %}
+      {% include 'inc/panels/comments.html' %}
+    </div>
+  </div>
+{% endblock content %}

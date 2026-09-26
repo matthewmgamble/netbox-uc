@@ -1,0 +1,50 @@
+{% extends 'generic/object.html' %}
+{% load helpers %}
+{% load plugins %}
+{% load render_table from django_tables2 %}
+
+{% block content %}
+  <div class="row mb-3">
+    <div class="col col-md-6">
+      <div class="card">
+        <h5 class="card-header">SIP Trunk Endpoint</h5>
+        <table class="table table-hover attr-table">
+          <tr>
+            <th scope="row">FQDN / IP</th>
+            <td>{{ object.fqdn_or_ip }}</td>
+          </tr>
+          <tr>
+            <th scope="row">Port</th>
+            <td>{{ object.port }}</td>
+          </tr>
+          <tr>
+            <th scope="row">Protocol</th>
+            <td>{{ object.protocol|placeholder }}</td>
+          </tr>
+          <tr>
+            <th scope="row">Priority</th>
+            <td>{{ object.priority }}</td>
+          </tr>
+          <tr>
+            <th scope="row">Description</th>
+            <td>{{ object.description|placeholder }}</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    <div class="col col-md-6">
+      <div class="card">
+        <h5 class="card-header">Assignment</h5>
+        <table class="table table-hover attr-table">
+          <tr>
+            <th scope="row">SIP Trunk</th>
+            <td>
+              <a href="{{ object.sip_trunk.get_absolute_url }}">{{ object.sip_trunk }}</a>
+            </td>
+          </tr>
+        </table>
+      </div>
+      {% include 'inc/panels/tags.html' %}
+    </div>
+  </div>
+{% endblock content %}

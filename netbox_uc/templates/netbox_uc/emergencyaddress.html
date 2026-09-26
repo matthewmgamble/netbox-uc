@@ -1,0 +1,104 @@
+{% extends 'generic/object.html' %}
+{% load helpers %}
+{% load plugins %}
+{% load render_table from django_tables2 %}
+
+{% block content %}
+  <div class="row mb-3">
+    <div class="col col-md-6">
+      <div class="card">
+        <h5 class="card-header">Emergency Address</h5>
+        <table class="table table-hover attr-table">
+          <tr>
+            <th scope="row">Name</th>
+            <td>{{ object.name }}</td>
+          </tr>
+          <tr>
+            <th scope="row">Street</th>
+            <td>{{ object.street }}</td>
+          </tr>
+          <tr>
+            <th scope="row">City</th>
+            <td>{{ object.city }}</td>
+          </tr>
+          <tr>
+            <th scope="row">Province/State</th>
+            <td>{{ object.province_state }}</td>
+          </tr>
+          <tr>
+            <th scope="row">Postal Code</th>
+            <td>{{ object.postal_code }}</td>
+          </tr>
+          <tr>
+            <th scope="row">Country</th>
+            <td>{{ object.country }}</td>
+          </tr>
+          <tr>
+            <th scope="row">Latitude</th>
+            <td>{{ object.latitude|placeholder }}</td>
+          </tr>
+          <tr>
+            <th scope="row">Longitude</th>
+            <td>{{ object.longitude|placeholder }}</td>
+          </tr>
+          <tr>
+            <th scope="row">Validated</th>
+            <td>
+              {% if object.validated %}
+                <span class="text-success"><i class="mdi mdi-check-bold"></i></span>
+              {% else %}
+                <span class="text-danger"><i class="mdi mdi-close-thick"></i></span>
+              {% endif %}
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">Description</th>
+            <td>{{ object.description|placeholder }}</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    <div class="col col-md-6">
+      <div class="card">
+        <h5 class="card-header">Assignment</h5>
+        <table class="table table-hover attr-table">
+          <tr>
+            <th scope="row">Site</th>
+            <td>
+              {% if object.site %}
+                <a href="{{ object.site.get_absolute_url }}">{{ object.site }}</a>
+              {% else %}
+                &mdash;
+              {% endif %}
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="card">
+        <h5 class="card-header">External References</h5>
+        <table class="table table-hover attr-table">
+          <tr>
+            <th scope="row">External ID</th>
+            <td>{{ object.external_id|placeholder }}</td>
+          </tr>
+          <tr>
+            <th scope="row">Sync Status</th>
+            <td>
+              {% if object.sync_status %}
+                {% badge object.get_sync_status_display bg_color=object.get_sync_status_color %}
+              {% else %}
+                &mdash;
+              {% endif %}
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">Last Synced</th>
+            <td>{{ object.last_synced|placeholder }}</td>
+          </tr>
+        </table>
+      </div>
+      {% include 'inc/panels/tags.html' %}
+      {% include 'inc/panels/comments.html' %}
+    </div>
+  </div>
+{% endblock content %}
