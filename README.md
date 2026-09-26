@@ -61,7 +61,33 @@ sudo systemctl restart netbox netbox-rq
 
 ## Microsoft Teams Sync
 
-To sync data from Microsoft Teams, configure credentials in `configuration.py`:
+### Entra ID App Registration
+
+The sync engine uses OAuth2 client credentials (app-only) to call Microsoft Graph. You'll need an app registration in your Microsoft Entra ID (Azure AD) tenant.
+
+1. Go to [Entra ID > App registrations](https://entra.microsoft.com/#view/Microsoft_AAD_RegisteredApps/ApplicationsListBlade) and click **New registration**.
+2. Name it something like `NetBox UC Sync`, leave the redirect URI blank, and click **Register**.
+3. Note the **Application (client) ID** and **Directory (tenant) ID** from the overview page.
+4. Under **Certificates & secrets > Client secrets**, click **New client secret**, set an expiry, and copy the secret value immediately (it won't be shown again).
+
+### API Permissions
+
+Under **API permissions**, add the following **Microsoft Graph Application permissions** (not Delegated):
+
+| Permission | Type | Used For |
+|------------|------|----------|
+| `User.Read.All` | Application | Fetching resource accounts (users with Phone System Virtual User license) |
+
+Click **Grant admin consent for [your tenant]** after adding permissions.
+
+> **Note:** The auto attendant, call queue, and phone number endpoints use the Microsoft Graph beta API (`/beta/communications/autoAttendants`, `/beta/communications/callQueues`, `/beta/communications/phoneNumbers`). These beta endpoints currently require the **Teams Administrator** or **Global Reader** admin role assigned to the service principal, as granular Graph permissions for these endpoints are not yet available in GA. To assign the role:
+>
+> 1. Go to **Entra ID > Enterprise applications**, find your app's service principal.
+> 2. Under **Roles and administrators**, assign the **Teams Administrator** role (or **Global Reader** for read-only access).
+
+### Configuration
+
+Add credentials to `configuration.py`:
 
 ```python
 PLUGINS_CONFIG = {
