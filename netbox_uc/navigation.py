@@ -1,7 +1,7 @@
 from netbox.plugins import PluginMenu, PluginMenuButton, PluginMenuItem
 
 menu = PluginMenu(
-    label='Unified Communications',
+    label='NetBox Unified Communications',
     icon_class='mdi mdi-phone',
     groups=(
         ('Inventory', (

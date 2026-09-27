@@ -1,4 +1,4 @@
-# NetBox UC
+# NetBox Unified Communications
 
 A [NetBox](https://github.com/netbox-community/netbox) plugin for Unified Communications inventory, relationship, and lifecycle management.
 

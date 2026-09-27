@@ -3,8 +3,8 @@ from netbox.plugins import PluginConfig
 
 class NetBoxUCConfig(PluginConfig):
     name = 'netbox_uc'
-    verbose_name = 'Unified Communications'
-    description = 'UC inventory, relationship, and lifecycle management for NetBox'
+    verbose_name = 'NetBox Unified Communications'
+    description = 'Unified Communications inventory, relationship, and lifecycle management for NetBox'
     version = '0.1.0'
     author = 'Matthew Gamble'
     author_email = ''
