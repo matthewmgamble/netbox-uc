@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "netbox-uc"
-version = "0.1.0"
+version = "0.1.1"
 description = "Unified Communications inventory and lifecycle management for NetBox"
 readme = "README.md"
 license = {text = "Apache-2.0"}

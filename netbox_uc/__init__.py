@@ -5,7 +5,7 @@ class NetBoxUCConfig(PluginConfig):
     name = 'netbox_uc'
     verbose_name = 'NetBox Unified Communications'
     description = 'Unified Communications inventory, relationship, and lifecycle management for NetBox'
-    version = '0.1.0'
+    version = '0.1.1'
     author = 'Matthew Gamble'
     author_email = ''
     base_url = 'netbox-uc'
