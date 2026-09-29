@@ -35,11 +35,6 @@ class Command(BaseCommand):
             help='Microsoft app client ID (overrides plugin config)',
         )
         parser.add_argument(
-            '--client-secret',
-            type=str,
-            help='Microsoft app client secret (overrides plugin config)',
-        )
-        parser.add_argument(
             '--platform',
             type=str,
             help='Name of the UCPlatform to associate synced objects with',
@@ -60,12 +55,14 @@ class Command(BaseCommand):
         ms_config = get_plugin_config('netbox_uc', 'microsoft') or {}
         tenant_id = options['tenant_id'] or ms_config.get('tenant_id', '')
         client_id = options['client_id'] or ms_config.get('client_id', '')
-        client_secret = options['client_secret'] or ms_config.get('client_secret', '')
+        client_secret = ms_config.get('client_secret', '')
 
         if not all([tenant_id, client_id, client_secret]):
             raise CommandError(
-                'Microsoft credentials required. Set via plugin config or '
-                '--tenant-id, --client-id, --client-secret arguments.'
+                'Microsoft credentials required. Set tenant_id, client_id, and '
+                'client_secret in the plugin config (PLUGINS_CONFIG). '
+                'tenant_id and client_id may also be passed via '
+                '--tenant-id and --client-id arguments.'
             )
 
         # Resolve platform
@@ -122,9 +119,11 @@ class Command(BaseCommand):
                 total_created += result.created
                 total_updated += result.updated
                 total_errors += len(result.errors)
-            except Exception as e:
-                self.stdout.write(self.style.ERROR(f'  Failed: {e}'))
-                logger.exception("Sync failed for %s", label)
+            except Exception:
+                self.stdout.write(self.style.ERROR(
+                    f'  Failed — check logs for details (enable DEBUG for full traceback)'
+                ))
+                logger.error("Sync failed for %s", label, exc_info=logger.isEnabledFor(logging.DEBUG))
                 total_errors += 1
 
         elapsed = time.time() - start_time

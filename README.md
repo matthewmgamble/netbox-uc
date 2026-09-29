@@ -80,10 +80,22 @@ Under **API permissions**, add the following **Microsoft Graph Application permi
 
 Click **Grant admin consent for [your tenant]** after adding permissions.
 
-> **Note:** The auto attendant, call queue, and phone number endpoints use the Microsoft Graph beta API (`/beta/communications/autoAttendants`, `/beta/communications/callQueues`, `/beta/communications/phoneNumbers`). These beta endpoints currently require the **Teams Administrator** or **Global Reader** admin role assigned to the service principal, as granular Graph permissions for these endpoints are not yet available in GA. To assign the role:
->
-> 1. Go to **Entra ID > Enterprise applications**, find your app's service principal.
-> 2. Under **Roles and administrators**, assign the **Teams Administrator** role (or **Global Reader** for read-only access).
+### Required Entra ID Roles
+
+The auto attendant, call queue, and phone number endpoints use the Microsoft Graph **beta** API. Granular Graph permissions for these endpoints are not yet available in GA, so an admin role must be assigned to the service principal.
+
+| Endpoint | API | Required Role |
+|----------|-----|---------------|
+| `/beta/communications/autoAttendants` | Beta | **Teams Administrator** or **Global Reader** |
+| `/beta/communications/callQueues` | Beta | **Teams Administrator** or **Global Reader** |
+| `/beta/communications/phoneNumbers` | Beta | **Teams Administrator** or **Global Reader** |
+
+To assign the role:
+
+1. Go to **Entra ID > Enterprise applications**, find your app's service principal.
+2. Under **Roles and administrators**, assign the **Teams Administrator** role (or **Global Reader** for read-only access).
+
+> **Security note:** The **Teams Administrator** role grants broad read/write access to Teams configuration. If the sync credential is compromised, an attacker could modify Teams settings tenant-wide. Prefer **Global Reader** if write access is not required. Rotate the client secret on a regular schedule and store it only in the NetBox plugin configuration — never pass it on the command line.
 
 ### Configuration
 
@@ -113,8 +125,12 @@ Options:
 | Flag | Description |
 |------|-------------|
 | `--dry-run` | Preview changes without writing |
+| `--tenant-id <id>` | Override the tenant ID from plugin config |
+| `--client-id <id>` | Override the client ID from plugin config |
 | `--platform <name>` | Associate synced objects with a UC Platform |
 | `--skip <type>` | Skip specific types: `resource-accounts`, `phone-numbers`, `auto-attendants`, `call-queues` |
+
+> **Note:** The client secret must be set in the plugin configuration (`PLUGINS_CONFIG`) and cannot be passed on the command line, to avoid exposure in shell history and process listings.
 
 ## License
 

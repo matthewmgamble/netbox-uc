@@ -148,9 +148,10 @@ class SourceAdapter:
             try:
                 self.create_object(item)
                 result.created += 1
-            except Exception as e:
-                result.errors.append(f"Failed to create: {e}")
-                logger.exception("Failed to create object: %s", item.get('external_id', ''))
+            except Exception:
+                ext_id = item.get('external_id', '<unknown>')
+                result.errors.append(f"Failed to create object {ext_id}")
+                logger.error("Failed to create object: %s", ext_id, exc_info=logger.isEnabledFor(logging.DEBUG))
 
         for obj, item in diff.changed:
             if dry_run:
@@ -159,9 +160,9 @@ class SourceAdapter:
             try:
                 self.update_object(obj, item)
                 result.updated += 1
-            except Exception as e:
-                result.errors.append(f"Failed to update {obj}: {e}")
-                logger.exception("Failed to update object: %s", obj)
+            except Exception:
+                result.errors.append(f"Failed to update object {obj}")
+                logger.error("Failed to update object: %s", obj, exc_info=logger.isEnabledFor(logging.DEBUG))
 
         result.unchanged = len(diff.unchanged)
 
@@ -172,9 +173,9 @@ class SourceAdapter:
             try:
                 self.mark_missing(obj)
                 result.missing += 1
-            except Exception as e:
-                result.errors.append(f"Failed to mark missing {obj}: {e}")
-                logger.exception("Failed to mark missing: %s", obj)
+            except Exception:
+                result.errors.append(f"Failed to mark missing {obj}")
+                logger.error("Failed to mark missing: %s", obj, exc_info=logger.isEnabledFor(logging.DEBUG))
 
         return result
 
@@ -188,6 +189,24 @@ class SourceAdapter:
 
         normalized = self.normalize(raw_data)
         existing = self.get_existing()
+        existing_count = existing.count()
+
+        # Safety check: refuse to mark all records missing when the source
+        # returned nothing.  This prevents a Graph API outage or transient
+        # error from wiping the entire dataset.
+        if not normalized and existing_count > 0:
+            logger.error(
+                "Source returned 0 objects for %s but %d existing records found. "
+                "Aborting sync to prevent data loss.",
+                self.name, existing_count,
+            )
+            result = SyncResult()
+            result.errors.append(
+                f"Source returned 0 objects but {existing_count} existing records "
+                f"found — aborting to prevent data loss."
+            )
+            return result
+
         diff = self.compare(normalized, existing)
 
         logger.info(

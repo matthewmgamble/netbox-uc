@@ -38,8 +38,13 @@ class MicrosoftAuthClient:
 
         error = result.get('error', 'unknown')
         error_desc = result.get('error_description', 'No description')
+        # Log the full error at debug level for operators who opt in;
+        # the raised exception uses only the error code to avoid leaking
+        # tenant-specific details into higher-level logs or command output.
+        logger.debug("Token acquisition failed: %s — %s", error, error_desc)
         raise RuntimeError(
-            f"Failed to acquire Microsoft Graph token: {error} - {error_desc}"
+            f"Failed to acquire Microsoft Graph token (error: {error}). "
+            f"Enable debug logging for details."
         )
 
     @property

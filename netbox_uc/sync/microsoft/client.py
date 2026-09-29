@@ -57,38 +57,24 @@ class GraphClient:
 
     def get_auto_attendants(self) -> list[dict]:
         """Fetch Teams auto attendants."""
-        url = f'{GRAPH_BETA}/communications/callQueues'
-        # Note: Auto attendants use a different beta endpoint
         url = f'{GRAPH_BETA}/communications/autoAttendants'
         params = {'$top': '999'}
         logger.info("Fetching auto attendants from Microsoft Graph")
-        try:
-            return self._get_paginated(url, params)
-        except httpx.HTTPStatusError as e:
-            logger.warning("Failed to fetch auto attendants: %s", e)
-            return []
+        return self._get_paginated(url, params)
 
     def get_call_queues(self) -> list[dict]:
         """Fetch Teams call queues."""
         url = f'{GRAPH_BETA}/communications/callQueues'
         params = {'$top': '999'}
         logger.info("Fetching call queues from Microsoft Graph")
-        try:
-            return self._get_paginated(url, params)
-        except httpx.HTTPStatusError as e:
-            logger.warning("Failed to fetch call queues: %s", e)
-            return []
+        return self._get_paginated(url, params)
 
     def get_phone_numbers(self) -> list[dict]:
         """Fetch Teams phone numbers."""
         url = f'{GRAPH_BETA}/communications/phoneNumbers'
         params = {'$top': '999'}
         logger.info("Fetching phone numbers from Microsoft Graph")
-        try:
-            return self._get_paginated(url, params)
-        except httpx.HTTPStatusError as e:
-            logger.warning("Failed to fetch phone numbers: %s", e)
-            return []
+        return self._get_paginated(url, params)
 
     def close(self):
         """Close the HTTP client."""
